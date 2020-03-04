@@ -23,6 +23,9 @@ http://www.dafit.me/question/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9
 # 3. 연구
 
 [여기를 참조하세요](프로젝트 수행중)
+1. modeling
+2. load model
+3. keras tuner
 
 # 4. 결과
 

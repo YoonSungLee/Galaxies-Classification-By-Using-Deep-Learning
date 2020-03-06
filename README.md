@@ -22,15 +22,27 @@ http://www.dafit.me/question/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9
 
 # 3. 연구
 
-[여기를 참조하세요](프로젝트 수행중)
-1. modeling
-2. load model
-3. keras tuner
+[여기를 참조하세요](https://github.com/YoonSungLee/Galaxies-Classification-By-Using-Deep-Learning/blob/master/Galaxies%20Classification%20By%20Using%20Deep%20Learning%20Report(Final).ipynb)
 
 # 4. 결과
 
-프로젝트 수행중
+|model|accuracy|
+|:---:|---:|
+|Tutorial Model|76.50%|
+|Pratice Model 1|86.88%|
+|Pratice Model 2|85.62%|
+|Pratice Model 3|85.00%|
+|Pratice Model 4|87.29%|
+|Pratice Model 5|84.79%|
+|VGG16 Model 1|32.29%|
+|VGG16 Model 2|32.29%|
 
 # 5. 고찰
 
-프로젝트 수행중
+지난번 MLP모델에 이어 이번에는 처음으로 CNN 모델을 구축해보았다. 결과적으로 Tutorial에서 제공한 모델(76.50%)보다 직접 설계한 모델(Pratice Model 4: 87.29%)을 통해 10.79% 정도 성능을 향상시켰다. 앞으로 더 나아가야 할 방향에 대해서 간략히 정리해두겠다.<br><br>
+
+**이미지 업로드 및 학습 시간의 문제**<br>
+Vision 분야를 공부하기 위해 피할 수 없는 문제에 직면했다. AWS나 Local GPU를 사용하지 않고 Google Colab을 통해 모델을 학습하던 방식에 한계가 온 것이다. Colab을 사용하기 위해 Image를 Google Drive에 업로드시켜야 하는데 그 시간이 대략 3시간 정도 걸렸고, 모델 하나를 구성해서 ImageDataGenerator를 통해 학습하는 데 또한 마찬가지로 굉장히 긴 시간이 걸렸다. 만약 VIsion 분야를 계속해서 공부할것이라면 이에 대한 해결책이 필수적이다.<br><br>
+
+**단순한 CNN 구조를 넘어서 기술적인 모델링 기법 습득 필요**<br>
+지금까지 구성한 모델은 Conv2D, MaxPooling2D, GlobalAveragePooling2D, BatchNormalization, Dense, Dropout, Flatten 등의 단순한 CNN 구조의 조합으로 구성했다. 하지만 이러한 기법들로만 이용해서 고성능의 이미지 분류 모델을 구성하기엔 한계가 따르기 마련이다. 최근에 AI Innovation Square를 통해 DenseNet, GoogleNet, ResNet, U-Net, M-Net 등 Vision 분야에서 적용되는 많은 모델들과 그 기법들을 배우는 중인데, 이러한 기술적인 모델링 기법이 필요함을 느꼈다. 또한 이러한 기법을 잘 사용하려면 그 기법이 사용된 모델에 대한 충분한 이해가 뒷받침되어야 할 것이다. 따라서 Vision 분야에서 대표적인 모델들, 그리고 최신 모델들에 관한 논문을 읽고 이해하며, 구현할 필요성을 느꼈다.

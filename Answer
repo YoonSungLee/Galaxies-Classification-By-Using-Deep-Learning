@@ -1,0 +1,124 @@
+<딥러닝으로 은하 분류 - 레퍼런스>
+
+# 패키지 불러오기
+
+import numpy as np
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import MaxPooling2D
+from keras.layers import Flatten
+from keras.preprocessing.image import ImageDataGenerator
+
+① 위의 과정은 다중 클래스 이미지 분류에 사용되는 레이어들을 불러오는 과정이다.
+굵은 글씨로 표시된 Dense, Flatten, Conv2D, MaxPooling2D 레이어들이 각각 어떤 역할을 하는지 간단하게 적으시오.
+
+“Dense: 딥러닝 및 머신러닝에 가장 기본적으로 이용되는 레이어이며 입력층과 출력층을 모두 연결해준다.
+Conv2D: 영상 및 이미지 인식에 사용되는 레이어이며 그것들의 특징을 뽑아 새로운 2차원 데이터를 만들어낸다.
+MaxPooling2D: Conv2D 레이어의 출력 이미지에서 주요 값만 뽑아 크기가 작은 출력 영상을 만들어 지역적인 사소한 변화가 영향을 미치지 않도록 한다.
+Flatten: Conv2D와 MaxPooling2D 레이어를 거치면서 만들어진 2차원 데이터를 Dense층에 연결시키기 위해 1차원 데이터로 만들어주는 레이어“
+
+# 랜덤시드 고정
+
+np.random.seed(3)
+
+# 데이터 생성
+
+train_datagen = ImageDataGenerator(rescale=1./255)
+
+train_generator = train_datagen.flow_from_directory(
+        'warehouse/final_galaxy/train_galaxy', #파일 경로
+        target_size=(50,50),
+        batch_size=3,
+        class_mode='categorical')
+
+val_datagen = ImageDataGenerator(rescale=1./255)
+
+val_generator = val_datagen.flow_from_directory(
+        'warehouse/final_galaxy/val_galaxy', #파일 경로
+        target_size=(50,50),
+        batch_size=3,
+        class_mode='categorical')
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+test_generator = test_datagen.flow_from_directory(
+        'warehouse/final_galaxy/test_galaxy', #파일 경로
+        target_size=(50,50),
+        batch_size=3,
+        class_mode='categorical')
+
+② 케라스에서는 모델에게 이미지 데이터를 쉽게 학습시킬 수 있도록 ImageDataGenerator 클래스를 제공한다.
+위의 코드는 ImageDataGenerator 클래스를 이용해 특정 폴더에 분류된 이미지를 train, validation, test 데이터 셋으로 만드는 과정이다.
+Ⓐ, Ⓑ, Ⓒ, Ⓓ 에 들어갈 코드를 적으시오.
+(Hint: Ⓐ에 들어갈 코드는 호출된 함수이며, 함수의 인자로는 파일 경로, 이미지의 크기, 배치 크기, 분류 방식이 있다.)
+
+“generator로 새로운 데이터를 만들 때 호출되는 함수는 Ⓐflow_from_directory()이며, 파일 경로는 각자의 경우에 맞추어 적으면 된다.
+이미지 사이즈는 50*50 픽셀이고 이미지의 일부만 사용하는 것이 아닌 전체를 사용하므로 Ⓑtarget_size=(50,50),
+세 종류의 은하를 분류하므로 Ⓒbatch_size=3,
+다중 클래스 분류 문제이므로 2D one-hot 부호화된 라벨이 반환되는 Ⓓclass_mode='categorical‘이 들어가야 한다.”
+
+# 모델 구성
+
+model = Sequential()
+model.add(Conv2D(32, kernel_size=(3,3), stride=1, padding=1,
+                activation='relu',
+input_shape=(50,50,3)))
+model.add(MaxPooling2D(pool_size=(2,2),stride=2, padding=0))
+model.add(Conv2D(64,(3,3),stride=1, padding=1, activation='relu'))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dense(3, activation='softmax'))
+
+③-1. 위의 코드는 이미지 분류를 위한 컨볼루션 신경망 (CNN) 모델을 구성하는 과정이다. 아래 조건에 맞도록 알맞은 코드를 적으시오.
+
+▶ Conv2D 레이어 : 입력 이미지 크기 50*50, 입력 이미지 채널 3개 (RGB), 필터 크기 3 *3, 필터 수 32개, stride는 1, padding는 1, 활성화 함수 ‘relu’
+▶ MaxPooling2D 레이어 : 풀 크기 2*2, stride는 2, padding는 0, 
+▶ Conv2D 레이어 : 필터 크기 3*3, 필터 수 64개, stride는 1, padding는 1, 활성화 함수 ‘relu’
+▶ Flatten 레이어
+▶ Dense 레이어 : 출력 뉴런 수 128개, 활성화 함수 ‘relu’
+▶ Dense 레이어 : 출력 뉴런 수 3개, 활성화 함수 ‘softmax’
+
+“위와 같이 적으면 된다.”
+
+③-2. 활성화 함수인 relu와 softmax가 무엇이고 주로 언제 쓰이는지 간단히 설명하시오.
+
+“relu: 0보다 큰 입력 값에 대해선 1로 출력하고, 0보다 작은 입력 값에 대해선 0으로 출력하는 활성화 함수.
+기존에 쓰이던 sigmoid 활성화 함수는 0~1사이의 값을 출력하기 때문에 학습을 하면 할수록 갱신되는 가중치가 0에 가까워져 학습이 잘 되지 않는 문제가 발생,
+이를 해결하기 위해 나온 활성화 함수. 은닉층에 주로 사용된다.”
+
+“softmax: n개의 다른 이벤트들에 대해 n개의 확률 분포를 계산한다. 출력 확률 범위는 0~1이며, 확률을 모두 합치면 1이 된다.
+다중 클래스 분류 문제에서 출력층에 주로 쓰인다.”
+
+# 모델 학습과정 설정
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+④ 위의 코드는 모델의 학습과정을 설정하는 과정이다. 굵은 글씨로 표시된 loss, optimizer가 각각 무엇을 뜻하는지 간단히 설명하시오.
+
+“loss: 손실 함수를 설정하는 부분이다. 손실 함수는 딥러닝 모델이 학습을 하면서 실제값과 딥러닝의 학습 결과가 얼마나 차이 나는지 알려준다.
+따라서 손실 함수의 결과 값이 작을수록 학습이 잘 되었다고 할 수 있다.”
+“optimizer: 최적화 알고리즘을 설정하는 부분이다. 손실 함수의 결과 값을 최소화 하는, 가장 최적의 가중치를 찾아낸다.”
+
+# 모델 학습시키기
+
+hist=model.fit_generator(
+        train_generator,
+        steps_per_epoch=3411, 
+        epochs=50,
+        validation_data=val_generator,
+        validation_steps=200)  
+
+# 모델 평가
+
+print("--Evaluate--")
+scores = model.evaluate_generator(test_generator, steps=200)
+print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+
+⑤ 위의 코드는 모델을 학습시키고 평가하여 정확도를 출력하는 과정이다. Ⓐ, Ⓑ, Ⓒ, Ⓓ, Ⓔ 에 들어갈 코드를 적으시오.
+epoch는 50으로 고정되어있다.
+
+“케라스에서 모델을 사용할 때 주로 fit()함수를 호출하지만 이 경우 generator로 만든 데이터들을 모델에 학습시켰기 때문에 Ⓐfit_generator()함수를 호출한다.
+훈련 데이터로 쓰인 은하 이미지가 10233장이고 세 종류이므로 steps_per_epoch는 10233을 3으로 나눈 Ⓑ3411이 되어야 한다.
+val_generator와 test_generator에 쓰인 은하 이미지는 각각 200장이므로 Ⓒ200, Ⓔ200이다.
+fit()와 마찬가지로 모델을 평가할 때 주로 evaluate()함수를 호출하지만 이 경우 generator로 만든 데이터들을 모델에 학습시켰기 때문에 Ⓔevaluate_generator()함수를 호출한다.”

@@ -1,0 +1,54 @@
+# 패키지 불러오기
+
+import numpy as np
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import MaxPooling2D
+from keras.layers import Flatten
+from keras.preprocessing.image import ImageDataGenerator
+
+# 랜덤시드 고정
+
+np.random.seed(3)
+
+# 데이터 생성
+
+train_datagen = ImageDataGenerator(rescale=1./255)
+
+train_generator = train_datagen.ⓐ(
+        'warehouse/final_galaxy/train_galaxy', #파일 경로
+        ⓑ, ⓒ, ⓓ)
+
+val_datagen = ImageDataGenerator(rescale=1./255)
+
+val_generator = val_datagen.ⓐ(
+        'warehouse/final_galaxy/val_galaxy', #파일 경로
+        ⓑ, ⓒ, ⓓ)
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+test_generator = test_datagen.ⓐ(
+        'warehouse/final_galaxy/test_galaxy', #파일 경로
+        ⓑ, ⓒ, ⓓ)
+
+# 모델 구성
+
+model = Sequential()
+(......)
+(......)
+
+# 모델 학습과정 설정
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# 모델 학습시키기
+
+hist=model.ⓐ(train_generator, steps_per_epoch=ⓑ, epochs=50,
+        validation_data=val_generator, validation_steps=ⓒ)  
+
+# 모델 평가
+
+print("--Evaluate--")
+scores = model.ⓓ(test_generator, steps=ⓔ)
+print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
